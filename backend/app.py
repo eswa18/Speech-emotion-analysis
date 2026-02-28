@@ -24,7 +24,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'utils'))
 import config
 from utils.database import init_database, save_prediction, get_all_predictions, delete_prediction
 from utils.feature_extraction import extract_features, convert_to_wav
-from model.model_pytorch import get_model
+# Model import is now handled inside the HAS_TORCH guard
 
 app = Flask(__name__)
 CORS(app, origins=config.CORS_ORIGINS)
@@ -38,6 +38,7 @@ model = None
 
 try:
     if HAS_TORCH and os.path.exists(config.MODEL_PATH):
+        from model.model_pytorch import get_model
         model = get_model(num_classes=len(config.EMOTIONS),
                           input_size=config.COMBINED_FEATURE_DIM)
         model.load_state_dict(torch.load(config.MODEL_PATH, map_location=device))
