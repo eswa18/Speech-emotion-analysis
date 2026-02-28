@@ -1,0 +1,26 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: speech-emotion-backend
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHONIOENCODING
+        value: utf-8
+      - key: PORT
+        value: 5000
+
+  # Frontend Static Site
+  - type: static
+    name: speech-emotion-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: speech-emotion-backend
+          type: web
+          property: host
+        suffix: /api
