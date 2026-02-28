@@ -74,7 +74,7 @@ def health_check():
 def predict_emotion():
     """Predict emotion from uploaded audio file."""
     try:
-        if model is None:
+        if model is None and not getattr(config, 'IS_DEMO', False):
             return jsonify({
                 'error': 'Model not loaded. Train first: python model/train_model.py',
                 'success': False
