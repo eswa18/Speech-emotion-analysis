@@ -26,5 +26,5 @@ COPY . .
 # Expose the API port
 EXPOSE 5000
 
-# Command to run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
+# Command to run the application (Flask version)
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "8", "--timeout", "0"]

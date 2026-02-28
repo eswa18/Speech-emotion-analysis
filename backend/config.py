@@ -19,17 +19,19 @@ DATABASE_PATH = os.path.join(BASE_DIR, 'emotions.db')
 # API configuration
 API_HOST = '0.0.0.0'
 API_PORT = int(os.environ.get('PORT', 5000))
-DEBUG = True
+DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
 
 # ── Emotion Labels ──────────────────────────────────────────────
 # Core 4 emotions (used for training and prediction)
 EMOTIONS = ['Angry', 'Happy', 'Neutral', 'Sad']
 
 # Set this to True if using the synthetic demo model
-IS_DEMO = True
+IS_DEMO = os.environ.get('IS_DEMO', 'True').lower() == 'true'
 
 # CORS configuration
-CORS_ORIGINS = ["*", "http://localhost:5173", "http://127.0.0.1:5173"]
+CORS_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', "*").split(',')
+# If only "*" is provided, it stays as a single item list ["*"]
+# If "url1,url2" is provided, it becomes ["url1", "url2"]
 
 # ── Dataset Paths ───────────────────────────────────────────────
 DATASET_DIR = os.path.join(PROJECT_DIR, 'dataset')
