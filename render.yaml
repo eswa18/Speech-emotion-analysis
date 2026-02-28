@@ -1,5 +1,5 @@
 services:
-  # Backend Web Service
+  # Backend
   - type: web
     name: speech-emotion-backend
     env: python
@@ -8,11 +8,9 @@ services:
     envVars:
       - key: PYTHONIOENCODING
         value: utf-8
-      - key: PORT
-        value: 5000
 
-  # Frontend Static Site
-  - type: static
+  # Frontend
+  - type: web
     name: speech-emotion-frontend
     env: static
     buildCommand: cd frontend && npm install && npm run build
