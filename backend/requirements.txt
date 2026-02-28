@@ -1,8 +1,6 @@
-fastapi
-uvicorn
-python-multipart
-torch
-torchaudio
+flask
+flask-cors
+gunicorn
 pydub
 numpy
 pandas
@@ -14,6 +12,5 @@ scipy
 python-dotenv
 seaborn
 noisereduce
-flask
-flask-cors
-gunicorn
+python-multipart
+# torch and torchaudio removed for Lite mode (avoids Render timeout)

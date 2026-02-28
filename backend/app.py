@@ -10,7 +10,11 @@ import sys
 import random
 import hashlib
 import traceback
-import torch
+try:
+    import torch
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
 import numpy as np
 from werkzeug.utils import secure_filename
 
@@ -29,17 +33,19 @@ CORS(app, origins=config.CORS_ORIGINS)
 init_database()
 
 # Load PyTorch model
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if HAS_TORCH else "cpu"
 model = None
 
 try:
-    if os.path.exists(config.MODEL_PATH):
+    if HAS_TORCH and os.path.exists(config.MODEL_PATH):
         model = get_model(num_classes=len(config.EMOTIONS),
                           input_size=config.COMBINED_FEATURE_DIM)
         model.load_state_dict(torch.load(config.MODEL_PATH, map_location=device))
         model.to(device)
         model.eval()
         print(f"✅ PyTorch model loaded on {device}")
+    elif not HAS_TORCH:
+        print("ℹ️  Running in Lite Mode (No Torch installed)")
     else:
         print(f"⚠️  Model not found at {config.MODEL_PATH}")
         print("   Run: python model/train_model.py --dataset ravdess")
@@ -128,6 +134,8 @@ def predict_emotion():
                 total = sum(weights)
                 probabilities = np.array([w / total for w in weights])
             else:
+                if not HAS_TORCH:
+                    return jsonify({'error': 'Prediction mode requires Torch. Please use Demo mode or install Torch.', 'success': False}), 500
                 input_tensor = torch.FloatTensor(features).unsqueeze(0).to(device)
                 with torch.no_grad():
                     outputs = model(input_tensor)
