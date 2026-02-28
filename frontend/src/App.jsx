@@ -1,3 +1,4 @@
+// Deployment trigger: Final production build
 import { useState, useEffect } from 'react';
 import './styles/App.css';
 import FileUpload from './components/FileUpload';
